@@ -25,5 +25,17 @@ After  applying canny() method to image i obtained following result.
 
 
 
+<p  align="left">
+<img  src="Data/test_image.jpg"  width="620" height="350">
+</p>
+
+<p  align="right">
+<img  src="Results/canny_image.png"  width="620" height="350">
+</p>
+
+
+
+
+
  
  
