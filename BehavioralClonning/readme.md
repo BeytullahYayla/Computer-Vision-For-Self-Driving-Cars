@@ -1,5 +1,17 @@
 # Overview
 
+
+
+
+
+
+https://user-images.githubusercontent.com/78471151/177855820-f37de60a-32e8-4c5f-9803-f0845d49dc00.mp4
+
+
+
+
+
+
 ## What's the Behavioral Clonning
 Behavioral Clonning is a method by which human subcognitive skills can be captured and reproduced in a computer program. In this project I used behavioral cloning technique in shown below to train a neural network that can drive a car in Udacity Self Driving Car Simulation without hitting obstacles.
 
@@ -100,6 +112,7 @@ It pans to image from x and y coordinates randomly in range -0.1,0.1.
               image, steering_angle = img_random_flip(image, steering_angle)
 
             return image, steering_angle
+
 
 
 
