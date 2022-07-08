@@ -142,7 +142,7 @@ Firstly we defined a method that loads images and corresponding steering angles.
  
 We split our data by using train_test_split method from sklearn library. We adjusted our test_size ratio as 0.2. Which is most of the time a good test size value.
 
-<img src="Images/training_dist"> 
+<img src="Images/Dataset_Distribution_4.png"> 
 
 Seems like our training and validation data is consistent with each other.
 
@@ -159,7 +159,49 @@ Image preprocessing are the steps taken to format images before they are used by
           image_to_preprocess = image_to_preprocess/255
           return image_to_preprocess
 
-img_preprocess() method takes one argument. Which is image to preprocess. At first we crop image that part of we don't need to extract it's features. Such as front of a car. We cropped that part. Then we convert  
+img_preprocess() method takes one argument. Which is image to preprocess. At first we crop image that part of we don't need to extract it's features. Such as front of a car. We cropped that part. Then we convert  our images RGB to YUV format. YUV is a color model typically used as part of a color image pipeline. It encodes a color image or video taking human perception into account, allowing reduced bandwidth for chrominance components, compared to a "direct" RGB-representation. After that we applied GaussianBlur to image for smoothening image. We reshaped our image 200,66. Finally we normalized image by divide 255. So our pixel values will be in range of 0 and 1.
+
+## Data Generator Method
+
+        def batch_generator(image_paths, steering_ang, batch_size, istraining):
+
+          while True:
+            batch_img = []
+            batch_steering = []
+
+            for i in range(batch_size):
+              random_index = random.randint(0, len(image_paths) - 1)
+
+              if istraining:
+                im, steering = random_augment(image_paths[random_index], steering_ang[random_index])
+
+              else:
+                im = mplim.imread(image_paths[random_index])
+                steering = steering_ang[random_index]
+
+              im = img_preprocess(im)
+              batch_img.append(im)
+              batch_steering.append(steering)
+            yield (np.asarray(batch_img), np.asarray(batch_steering))
+         
+Generator functions is created bu using yield expression. The aim of batch_generator function is to produce random batches, based on the batch sizes passed.  By calling the functions with the required parameters, an iterator object of batches will be created. The batches can be retrieved by applying the next method to the iterator object. We will call the generator functions at the start of each epoch, so that the batches will be random in each epoch. batch_generator method takes 4 arguments:
+<br>
+<br>
+<b>image_paths:</b>Image data source<br>
+<b>steering_ang:</b>Steering angle source.<br>
+<b>batch_size:</b>It indicates our batch size. More clearly we determine this number by how many image we want at the end of one next method.<br>
+<b>istraining:</b>Indicates if the data we want to create is training data or not.<br>
+<br>
+## Nvidia Deep Convolutional Neural Network
+
+I've implemented deep neural network architecture from NVidia's paper: End to end learning for self-driving cars in Kerasrunning TensorFlow in the backend. It's an excellent paper and I recommend going through it if you're more into understanding the real world application of this deep neural network.
+
+
+
+![nvidia](https://user-images.githubusercontent.com/78471151/178000305-b3956815-9583-4b5e-8b7f-24b4b62aee42.png)
+
+
+The deep neural network itself takes input images (160 x 320 x 3). At the very beginning it contains normalization and cropping layers. This continues with 3 convolutional layers with 2x2 stride and 5x5 kernel. These are followed by additional 2 convolutional layers with no stride and 3x3 kernel. Convolution layers are connected to three fully connected layers leading to an output control value. Non-linearity is introduced between all network layers with ELU function. ADAM is used for our learning rates.
 
 
 
