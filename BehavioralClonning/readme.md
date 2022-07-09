@@ -203,6 +203,41 @@ I've implemented deep neural network architecture from NVidia's paper: End to en
 
 The deep neural network itself takes input images (160 x 320 x 3). At the very beginning it contains normalization and cropping layers. This continues with 3 convolutional layers with 2x2 stride and 5x5 kernel. These are followed by additional 2 convolutional layers with no stride and 3x3 kernel. Convolution layers are connected to three fully connected layers leading to an output control value. Non-linearity is introduced between all network layers with ELU function. ADAM is used for our learning rates.
 
+        def nvidia_updated_model():
+          model = Sequential()
+          model.add(Convolution2D(24,(5, 5), strides=(2, 2), input_shape=(66, 200, 3), activation='elu'))
+          model.add(Convolution2D(36, (5, 5), strides=(2, 2), activation='elu'))
+          model.add(Convolution2D(48, (5, 5), strides=(2, 2), activation='elu'))
+          model.add(Convolution2D(64, (3, 3), activation='elu'))
+
+          model.add(Convolution2D(64, (3, 3), activation='elu'))
+          #model.add(Dropout(0.5))
+
+
+          model.add(Flatten())
+
+          model.add(Dense(100, activation = 'elu'))
+          #model.add(Dropout(0.5))
+
+          model.add(Dense(50, activation = 'elu'))
+          #model.add(Dropout(0.5))
+
+          model.add(Dense(10, activation = 'elu'))
+          #model.add(Dropout(0.5))
+
+          model.add(Dense(1))
+          optimizer=Adam(learning_rate=1e-3)
+
+          model.compile(loss='mse', optimizer='adam')
+          return model
+        
+ You can realize that I've used ELU activation function instead of RELU function. Because when i tried to train nvidia model with RELU activation function I've faced with Vanishing Gradients problem. At some points we have negative Z values. According to RELU function at negative values the gradient was equal to 0. Adjusting weights in back propagation is related with gradients. When the gradient is equal to 0 the learning process slows down or completely stops. To prevent this situation I've used Leaky Relu Function.
+
+
+![elu](https://user-images.githubusercontent.com/78471151/178105856-6ae305db-28ce-43f4-a5e3-84e501bf8920.png)
+
+
+
 
 
 
